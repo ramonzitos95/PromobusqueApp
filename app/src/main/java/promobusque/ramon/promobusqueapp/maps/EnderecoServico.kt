@@ -2,12 +2,8 @@ package promobusque.ramon.promobusqueapp.maps
 
 import android.content.Context
 import android.location.Address
-import kotlin.TypeCastException
-import kotlin.Unit
-import kotlin.jvm.internal.Intrinsics
-import android.widget.Toast
-import java.nio.file.Files.size
 import android.location.Geocoder
+import android.widget.Toast
 import java.io.IOException
 
 
@@ -40,15 +36,12 @@ class EnderecoServico(val context: Context) {
     }
 
     fun populaLocalizacao(myLocation: List<*>?) {
-        val any: Unit
         if (myLocation == null || myLocation.size <= 0) {
             Toast.makeText(this.context, "endereço não localizado", 0).show()
-            any = Unit
         } else {
             var a: Address? = myLocation[0] as Address?
             if(a != null)
             {
-                val addressLine = a.getAddressLine(0)
                 latitude = a.latitude
                 longitude = a.longitude
                 endereco = a.locality

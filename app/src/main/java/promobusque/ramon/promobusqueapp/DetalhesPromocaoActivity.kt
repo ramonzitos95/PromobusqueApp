@@ -53,9 +53,9 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     fun compartilharPromocao() {
         val textoCompartilhamento: StringBuilder = StringBuilder()
-        textoCompartilhamento.appendln("Promoção: " + promocao?.Nome)
-        textoCompartilhamento.appendln("Descrição: " + promocao?.Descricao)
-        textoCompartilhamento.append("Local: " + promocao?.Empresa?.Endereco)
+        textoCompartilhamento.appendln("Promoção: " + promocao.Nome)
+        textoCompartilhamento.appendln("Descrição: " + promocao.Descricao)
+        textoCompartilhamento.append("Local: " + promocao.Empresa?.Endereco)
 
         val intent = Intent()
         intent.action = Intent.ACTION_SEND

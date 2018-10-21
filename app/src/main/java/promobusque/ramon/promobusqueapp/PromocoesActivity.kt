@@ -2,14 +2,16 @@ package promobusque.ramon.promobusqueapp
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_promocoes.*
+import kotlinx.android.synthetic.main.activity_bottom_promobusque.*
 import promobusque.ramon.promobusqueapp.modelos.Promocao
 import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
 import promobusque.ramon.promobusqueapp.ui.PromocoesAdapter
@@ -17,24 +19,25 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-const val TAG: String = "Promocoes"
+const val TAG: String = "Promobusque"
 
 class PromocoesActivity : AppCompatActivity() {
 
-
+    val bottomNavigationView: BottomNavigationView? = null
     private var mFirebaseAuth: FirebaseAuth? = null
     private var mAuthStateListener: FirebaseAuth.AuthStateListener? = null
-
     val ANONYMOUS = "anonymous"
 
     //Choose an arbitrary request code value
     private val RC_SIGN_IN = 1
-
     private var mUsername: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_promocoes)
+        setContentView(R.layout.activity_bottom_promobusque)
+
+        //Seta o bottom navigation
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         mUsername = ANONYMOUS
 
@@ -46,6 +49,13 @@ class PromocoesActivity : AppCompatActivity() {
 
         //Busca todas as promoções e preenche o adapter
         preencheAdapter()
+
+        //Firebase notification
+        inscreverTopicoFirebase()
+    }
+
+    private fun inscreverTopicoFirebase() {
+
     }
 
     private fun preencheAdapter() {
@@ -57,17 +67,11 @@ class PromocoesActivity : AppCompatActivity() {
                 if (response != null && response.isSuccessful) {
                     response?.let {
                         val promocoes: List<Promocao>? = it.body()
-                        setAdapterPromocoes(promocoes!!)
+                        atualizaAdapter(promocoes!!)
                     }
-
-
                 } else {
                     Log.e(TAG, "ocorreu um problema na requisição: " + (response?.errorBody() ?: ""))
                 }
-            }
-
-            private fun setAdapterPromocoes(promocoes: List<Promocao> ) {
-                list_view_promocoes.adapter = PromocoesAdapter(promocoes, this@PromocoesActivity)
             }
 
             override fun onFailure(call: Call<List<Promocao>>?, t: Throwable?) {
@@ -75,6 +79,10 @@ class PromocoesActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    fun atualizaAdapter(promocoes: List<Promocao>) {
+        list_view_promocoes.adapter = PromocoesAdapter(promocoes, this@PromocoesActivity)
     }
 
     private fun implementaLogin() {
@@ -123,12 +131,48 @@ class PromocoesActivity : AppCompatActivity() {
 
     private fun onSignedInitalize(displayName: String?) {
         mUsername = displayName
-        //attachDatabaseReadListener()
     }
 
     private fun onSignedOutCleanup() {
         mUsername = ANONYMOUS
-        //mMessageAdapter.clear()
-        //detachDatabaseReadListener()
+    }
+
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.navigation_home -> {
+                message.setText(R.string.title_favoritas)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_dashboard -> {
+                message.setText(R.string.title_config)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_notifications -> {
+                message.setText(R.string.title_filters)
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menupromobusque, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.sign_out_menu -> {
+                AuthUI.getInstance().signOut(this)
+                return true
+            }
+            R.id.op_refresh -> {
+                preencheAdapter()
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }

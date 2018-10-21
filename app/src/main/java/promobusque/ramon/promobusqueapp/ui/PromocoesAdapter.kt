@@ -1,6 +1,7 @@
 package promobusque.ramon.promobusqueapp.ui
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +52,9 @@ class PromocoesAdapter(
 
     fun ImplementaClickItemRecycler(viewCriada: View, promocao: Promocao) {
         viewCriada.setOnClickListener {
-            Toast.makeText(context, "Item da lista clicada", Toast.LENGTH_LONG).show()
+            val intent = Intent()
+            intent.putExtra("promocao", promocao)
+            context.startActivity(intent)
         }
     }
 }
