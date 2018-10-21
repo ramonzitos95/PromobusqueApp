@@ -10,5 +10,5 @@ class Promocao (
     val DataValidade: String,
     val IdEmpresa: Long,
     val IdCategoria: Long,
-    val Empresa: Empresa
+    val Empresa: Empresa?
 ) : Serializable

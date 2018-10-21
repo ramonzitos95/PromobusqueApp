@@ -4,12 +4,23 @@ import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_promocoes.*
+import promobusque.ramon.promobusqueapp.modelos.Promocao
+import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
+import promobusque.ramon.promobusqueapp.ui.PromocoesAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+const val TAG: String = "Promocoes"
 
 class PromocoesActivity : AppCompatActivity() {
+
 
     private var mFirebaseAuth: FirebaseAuth? = null
     private var mAuthStateListener: FirebaseAuth.AuthStateListener? = null
@@ -25,13 +36,49 @@ class PromocoesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_promocoes)
 
-        //FirebaseApp.initializeApp(this)
-
         mUsername = ANONYMOUS
 
         //Autenticação do aplicativo
         mFirebaseAuth = FirebaseAuth.getInstance()
 
+        //Implementa o login
+        implementaLogin()
+
+        //Busca todas as promoções e preenche o adapter
+        preencheAdapter()
+    }
+
+    private fun preencheAdapter() {
+        val call = RetrofitInitializer().promocaoService().obterPromocoes()
+
+        call.enqueue(object : Callback<List<Promocao>> {
+            override fun onResponse(call: Call<List<Promocao>>?, response: Response<List<Promocao>>?) {
+
+                if (response != null && response.isSuccessful) {
+                    response?.let {
+                        val promocoes: List<Promocao>? = it.body()
+                        setAdapterPromocoes(promocoes!!)
+                    }
+
+
+                } else {
+                    Log.e(TAG, "ocorreu um problema na requisição: " + (response?.errorBody() ?: ""))
+                }
+            }
+
+            private fun setAdapterPromocoes(promocoes: List<Promocao> ) {
+                list_view_promocoes.adapter = PromocoesAdapter(promocoes, this@PromocoesActivity)
+            }
+
+            override fun onFailure(call: Call<List<Promocao>>?, t: Throwable?) {
+                Log.e(TAG, "ocorreu um problema na requisição: " + (t?.message ?: ""))
+            }
+        })
+
+    }
+
+    private fun implementaLogin() {
+        //Implementa login
         mAuthStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             //Se o usuário estiver logado, apresenta mensagem

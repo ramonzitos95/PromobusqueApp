@@ -7,9 +7,9 @@ import retrofit2.http.Path
 
 interface PromocaoService {
 
-    @GET("/Promocao/ObterTodas")
-    fun list() : Call<List<Promocao>>
+    @GET("/Api/Promocao/AddVisitaPromocao/{idPromocao}")
+    fun addVisitaPromocao(@Path("idPromocao") j: Long)
 
-    @GET("/Promocao/AddVisitaPromocao/{idPromocao}")
-    fun list(@Path("idPromocao") idPromocao: Long)
+    @GET("/Api/Promocao/ObterTodas")
+    fun obterPromocoes(): Call<List<Promocao>>
 }

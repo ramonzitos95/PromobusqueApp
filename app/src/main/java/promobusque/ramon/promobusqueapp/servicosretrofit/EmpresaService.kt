@@ -4,6 +4,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface EmpresaService {
-    @GET("/Empresa/AddQuantidadeFavorito/{idEmpresa}")
-    fun list(@Path("idEmpresa") idEmpresa: Long)
+
+    @GET("/Api/Empresa/AddQuantidadeFavorito/{idEmpresa}")
+    fun AddQuantidadeFavorito(@Path("idEmpresa") idEmpresa: Long)
 }
