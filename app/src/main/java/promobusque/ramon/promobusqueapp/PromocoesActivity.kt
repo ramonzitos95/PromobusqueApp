@@ -51,18 +51,6 @@ class PromocoesActivity : AppCompatActivity() {
         }
     }
 
-    private fun onSignedInitalize(displayName: String?) {
-        mUsername = displayName
-        //attachDatabaseReadListener()
-    }
-
-    private fun onSignedOutCleanup() {
-        mUsername = ANONYMOUS
-        //mMessageAdapter.clear()
-        //detachDatabaseReadListener()
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
@@ -84,5 +72,16 @@ class PromocoesActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mFirebaseAuth?.addAuthStateListener(mAuthStateListener!!)
+    }
+
+    private fun onSignedInitalize(displayName: String?) {
+        mUsername = displayName
+        //attachDatabaseReadListener()
+    }
+
+    private fun onSignedOutCleanup() {
+        mUsername = ANONYMOUS
+        //mMessageAdapter.clear()
+        //detachDatabaseReadListener()
     }
 }
