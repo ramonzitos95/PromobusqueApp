@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_detalhes_promocao"
+        tools:context=".DetalhesPromocaoActivity">
+
+    <android.support.v7.widget.CardView android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_margin="10.0dip">
+        <LinearLayout android:layout_gravity="center_horizontal" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:textColor="@color/colorPrimaryDark" android:layout_gravity="center" android:id="@+id/text_nomepromocao" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Nome" />
+            <TextView android:textColor="@color/colorPrimaryDark" android:layout_gravity="center" android:id="@+id/text_datavalidade" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Data validade" />
+            <TextView android:textColor="@color/colorPrimaryDark" android:layout_gravity="center" android:id="@+id/text_descricao" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Descrição" />
+            <TextView android:textColor="@color/colorPrimaryDark" android:layout_gravity="center" android:id="@+id/text_razaosocial" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Razão social" />
+            <TextView android:textColor="@color/colorPrimaryDark" android:layout_gravity="center" android:id="@+id/text_endereco" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Endereço" />
+            <TextView android:textColor="@color/colorPrimaryDark" android:layout_gravity="center" android:id="@+id/text_cep" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Cep" />
+            <Button android:textColor="@color/colorFontDefault" android:layout_gravity="center" android:id="@+id/button_mapa" android:background="@color/colorPrimary" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Ver localização" />
+            <Button android:textColor="@color/colorFontDefault" android:layout_gravity="center" android:id="@+id/button_compartilhar" android:background="@color/colorPrimary" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Compartilhar promoção" />
+            <Button android:textColor="@color/colorFontDefault" android:layout_gravity="center" android:id="@+id/button_visitar_site" android:background="@color/colorPrimary" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Visitar site" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>
