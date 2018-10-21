@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 
 class PromocoesActivity : AppCompatActivity() {
@@ -24,17 +25,19 @@ class PromocoesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_promocoes)
 
-        //Autenticação do aplicativo
-        mFirebaseAuth = FirebaseAuth.getInstance()
+        //FirebaseApp.initializeApp(this)
 
         mUsername = ANONYMOUS
+
+        //Autenticação do aplicativo
+        mFirebaseAuth = FirebaseAuth.getInstance()
 
         mAuthStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             //Se o usuário estiver logado, apresenta mensagem
             if (user != null) {
                 onSignedInitalize(user.displayName)
-                Toast.makeText(this@PromocoesActivity, "Você conectou-se ao friendly chat!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PromocoesActivity, "Você conectou-se ao Promobusque!", Toast.LENGTH_SHORT).show()
             } else {
                 onSignedOutCleanup()
                 startActivityForResult(
@@ -69,5 +72,17 @@ class PromocoesActivity : AppCompatActivity() {
                 Toast.makeText(this, "Login cancelado!", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (mAuthStateListener != null) {
+            mFirebaseAuth?.removeAuthStateListener(mAuthStateListener!!)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mFirebaseAuth?.addAuthStateListener(mAuthStateListener!!)
     }
 }
