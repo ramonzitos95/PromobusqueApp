@@ -13,8 +13,8 @@ class PromocaoFavorita (
     val DataValidade: String,
     val IdEmpresa: Long,
     val IdPromocao: Long,
-    val RazaoSocialEmpresa: Long,
-    val EnderecoEmpresa: Long,
-    val CepEmpresa: Long,
-    val SiteEmpresa: Long
+    val RazaoSocialEmpresa: String,
+    val EnderecoEmpresa: String,
+    val CepEmpresa: String,
+    val SiteEmpresa: String
 ) : Serializable

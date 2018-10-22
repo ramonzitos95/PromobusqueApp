@@ -4,10 +4,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_detalhes_promocao.*
 import kotlinx.android.synthetic.main.content_detalhes_promocao.*
+import promobusque.ramon.promobusqueapp.db.DatabasePromo
 import promobusque.ramon.promobusqueapp.modelos.Promocao
+import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
 
 
 class DetalhesPromocaoActivity : AppCompatActivity() {
@@ -102,6 +106,34 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
                         text_cep.text = "Cep: $Cep"
                 }
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menupromobusque, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.op_favorite_promocao -> {
+                adicionarPromocaoAosFavoritos()
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun adicionarPromocaoAosFavoritos() {
+        if(promocao != null){
+            val promocaoFavoritaDao = DatabasePromo().getInstance(this)?.promocaoFavoritaDao()
+            val favorita = promocaoFavoritaDao?.findByIdPromocao(promocao.Id)
+
+            //Somente serão incluidas promoções favoritas, caso a mesma não foi adicionada na base
+            if(favorita == null)
+                promocaoFavoritaDao?.add(PromocaoFavorita(Nome = promocao.Nome, Descricao = promocao.Descricao, DataValidade = promocao.DataValidade, IdPromocao = promocao.Id, IdEmpresa = promocao.IdEmpresa!!, CepEmpresa = promocao.Empresa?.Cep!!, EnderecoEmpresa = promocao.Empresa!!.Endereco, RazaoSocialEmpresa = promocao.Empresa!!.RazaoSocial, SiteEmpresa = promocao.Empresa!!.Site, Id = 0))
         }
     }
 }

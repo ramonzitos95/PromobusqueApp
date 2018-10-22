@@ -20,8 +20,7 @@ class DatabasePromo {
             context,
             AppDatabase::class.java!!,
             DB_NAME
-        )
-            //.allowMainThreadQueries() //Permite rodar na thread principal
+        ).allowMainThreadQueries() //Permite rodar na thread principal
             //.fallbackToDestructiveMigration() //Ao realizar a migração descomentar este trecho
             .build()
     }
