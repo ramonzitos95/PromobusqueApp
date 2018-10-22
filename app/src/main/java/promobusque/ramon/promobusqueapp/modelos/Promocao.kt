@@ -8,7 +8,7 @@ class Promocao (
     val Descricao: String,
     val Situacao: Short,
     val DataValidade: String,
-    val IdEmpresa: Long,
-    val IdCategoria: Long,
+    val IdEmpresa: Long?,
+    val IdCategoria: Long?,
     val Empresa: Empresa?
 ) : Serializable

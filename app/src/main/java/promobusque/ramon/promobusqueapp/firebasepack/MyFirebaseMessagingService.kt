@@ -1,5 +1,6 @@
 package promobusque.ramon.promobusqueapp.firebasepack
 
+import android.annotation.SuppressLint
 import android.app.Notification.Builder
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -22,6 +23,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         FirebaseMessaging.getInstance().subscribeToTopic("promobusque")
     }
 
+    @SuppressLint("WrongConstant")
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         Log.e("JSON_OBJECT", JSONObject(remoteMessage!!.data).toString())
         val NOTIFICATION_CHANNEL_ID = "promobusque"

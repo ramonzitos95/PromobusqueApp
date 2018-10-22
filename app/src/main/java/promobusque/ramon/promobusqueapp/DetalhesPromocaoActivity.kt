@@ -39,7 +39,7 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     //Abre site do estabelecimento
     fun abrirSiteEstabelecimento(){
-        if(!promocao.Empresa?.Site.isNullOrEmpty())
+        if(promocao.Empresa != null && !(promocao.Empresa?.Site.isNullOrEmpty()))
         {
             val i = Intent(
                 Intent.ACTION_VIEW,
@@ -66,7 +66,18 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     private fun setListenerBotaoMapa() {
         button_mapa.setOnClickListener {
+            abrirGoogleMaps()
+        }
+    }
 
+    fun abrirGoogleMaps(){
+        if(promocao.Empresa != null && promocao.Empresa!!.Endereco.isNotEmpty())
+        {
+            val intent = Intent(this, GoogleMapsActivity::class.java)
+            intent.putExtra("empresa", promocao?.Empresa)
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "Não será possível abrir o mapa, pois o estabelecimento não possui endereço", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -75,12 +86,22 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
         with(promocao)
         {
-            text_cep.text = "Cep: " + Empresa!!.Cep
-            text_datavalidade.text = "Data de validade: " + DataValidade
-            text_descricao.text = "Descrição: " + Descricao
-            text_endereco.text = "Endereço" + Empresa.Endereco
-            text_nomepromocao.text = "Promoção: " + Nome
-            text_cep.text = "Cep: " + Empresa.Cep
+            text_datavalidade.text = "Data de validade: $DataValidade"
+            text_descricao.text = "Descrição: $Descricao"
+            text_nomepromocao.text = "Promoção: $Nome"
+
+            if(Empresa != null)
+            {
+                with(Empresa)
+                {
+
+                    if(!(this?.Endereco?.isEmpty()!!))
+                        text_endereco.text = "Endereço: $Endereco"
+
+                    if(!(Cep.isEmpty()))
+                        text_cep.text = "Cep: $Cep"
+                }
+            }
         }
     }
 }

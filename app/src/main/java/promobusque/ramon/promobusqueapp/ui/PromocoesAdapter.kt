@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Toast
 import kotlinx.android.synthetic.main.item_promocao_recyclerview.view.*
+import promobusque.ramon.promobusqueapp.DetalhesPromocaoActivity
 import promobusque.ramon.promobusqueapp.R
 import promobusque.ramon.promobusqueapp.TAG
 import promobusque.ramon.promobusqueapp.modelos.Promocao
@@ -29,8 +30,8 @@ class PromocoesAdapter(
             textView_datavalidade.text = promocao.DataValidade
             textView_descricao.text = promocao.Descricao
             textView_nomepromocao.text = promocao.Nome
-            textView_razaosocial.text = promocao.Empresa!!.RazaoSocial
-            textView_cep.text = promocao.Empresa.Cep
+            textView_razaosocial.text = promocao?.Empresa?.RazaoSocial
+            textView_cep.text = promocao?.Empresa?.Cep
         }
 
         ImplementaClickItemRecycler(viewCriada, promocao)
@@ -52,7 +53,7 @@ class PromocoesAdapter(
 
     fun ImplementaClickItemRecycler(viewCriada: View, promocao: Promocao) {
         viewCriada.setOnClickListener {
-            val intent = Intent()
+            val intent = Intent(context, DetalhesPromocaoActivity::class.java)
             intent.putExtra("promocao", promocao)
             context.startActivity(intent)
         }

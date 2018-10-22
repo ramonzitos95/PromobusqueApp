@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +20,12 @@ import promobusque.ramon.promobusqueapp.ui.PromocoesAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.jvm.internal.Intrinsics
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
+import promobusque.ramon.promobusqueapp.dialogs.ConfiguracaoPromobusqueDialog
+import promobusque.ramon.promobusqueapp.modelos.ConfiguracaoPromobusque
+
 
 const val TAG: String = "Promobusque"
 
@@ -49,13 +57,15 @@ class PromocoesActivity : AppCompatActivity() {
 
         //Busca todas as promoções e preenche o adapter
         preencheAdapter()
-
-        //Firebase notification
-        inscreverTopicoFirebase()
     }
 
     private fun inscreverTopicoFirebase() {
+        FirebaseMessaging.getInstance().subscribeToTopic("promobusque")
+        val instance = FirebaseInstanceId.getInstance()
 
+        instance.instanceId.addOnSuccessListener{
+            Log.d(TAG, "Firebase iniciado.")
+        }
     }
 
     private fun preencheAdapter() {
@@ -92,6 +102,7 @@ class PromocoesActivity : AppCompatActivity() {
             //Se o usuário estiver logado, apresenta mensagem
             if (user != null) {
                 onSignedInitalize(user.displayName)
+                inscreverTopicoFirebase()
                 Toast.makeText(this@PromocoesActivity, "Você conectou-se ao Promobusque!", Toast.LENGTH_SHORT).show()
             } else {
                 onSignedOutCleanup()
@@ -140,11 +151,11 @@ class PromocoesActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                message.setText(R.string.title_favoritas)
+                abrePromocoesFavoritas()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
-                message.setText(R.string.title_config)
+                abreDialogConfiguracoes()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
@@ -153,6 +164,15 @@ class PromocoesActivity : AppCompatActivity() {
             }
         }
         false
+    }
+
+    private fun abrePromocoesFavoritas() {
+        val intent = Intent(this,  PromocoesFavoritasActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun abreDialogConfiguracoes() {
+        ConfiguracaoPromobusqueDialog(this, window.decorView as ViewGroup).abre()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

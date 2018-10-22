@@ -79,4 +79,5 @@
     <string name="title_favoritas">Promoções favoritas</string>
     <string name="title_config">Configurações</string>
     <string name="title_filters">Filtros</string>
+    <string name="title_activity_promocoes_favoritas">PromocoesFavoritasActivity</string>
 </resources>
