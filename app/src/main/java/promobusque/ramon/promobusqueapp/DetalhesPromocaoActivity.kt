@@ -111,7 +111,7 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menupromobusque, menu)
+        inflater.inflate(R.menu.menu_detalhes_promocao, menu)
         return true
     }
 
@@ -128,7 +128,7 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     private fun adicionarPromocaoAosFavoritos() {
         if(promocao != null){
-            val promocaoFavoritaDao = DatabasePromo().getInstance(this)?.promocaoFavoritaDao()
+            val promocaoFavoritaDao = DatabasePromo().getInstance(this)?.promocaoFavoritaDao
             val favorita = promocaoFavoritaDao?.findByIdPromocao(promocao.Id)
 
             //Somente serão incluidas promoções favoritas, caso a mesma não foi adicionada na base

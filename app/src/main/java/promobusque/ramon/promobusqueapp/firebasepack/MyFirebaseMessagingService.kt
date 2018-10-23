@@ -64,6 +64,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     fun podeMostrarNotificacao(): Boolean {
         val database = DatabasePromo().getInstance(this)
-        return database?.configuracaoPromobusqueDao()?.findById(1)!!.RecebeNotificacao;
+        return database?.configuracaoPromobusqueDao?.findById(1)!!.RecebeNotificacao;
     }
 }

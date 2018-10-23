@@ -76,8 +76,12 @@
     <string name="title_activity_detalhes_promocao">DetalhesPromocao</string>
     <string name="google_maps_key">AIzaSyBR5Ka0gSctKSWSN7UPax01uvhujyNPByY</string>
     <string name="title_activity_bottom_promobusque">BottomPromobusqueActivity</string>
-    <string name="title_favoritas">Promoções favoritas</string>
+    <string name="title_favoritas">Favoritas</string>
     <string name="title_config">Configurações</string>
     <string name="title_filters">Filtros</string>
     <string name="title_activity_promocoes_favoritas">PromocoesFavoritasActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="receber_notifica_es">Receber notificações</string>
 </resources>

@@ -1,27 +1,31 @@
 package promobusque.ramon.promobusqueapp.db
 
+import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.RoomDatabase
 import android.content.Context
+import promobusque.ramon.promobusqueapp.dao.ConfiguracaoPromobusqueDao
+import promobusque.ramon.promobusqueapp.dao.PromocaoFavoritaDao
+import promobusque.ramon.promobusqueapp.modelos.ConfiguracaoPromobusque
+import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
 
-class DatabasePromo {
+@Database(entities = [ConfiguracaoPromobusque::class, PromocaoFavorita::class], version = 2)
+abstract class DatabasePromo : RoomDatabase() {
+
+    abstract fun configuracaoPromobusqueDao(): ConfiguracaoPromobusqueDao
+    abstract fun promocaoFavoritaDao(): PromocaoFavoritaDao
 
     private val DB_NAME = "promobusque.db"
-    private var instance: AppDatabase? = null
+    private lateinit var INSTANCE: DatabasePromo
 
-    fun getInstance(context: Context): AppDatabase? {
-        if (instance == null) {
-            instance = create(context)
+    public fun getAppDatabase(context: Context): DatabasePromo {
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(context.applicationContext, DatabasePromo::class.java, DB_NAME)
+                .allowMainThreadQueries().build()
+
+            //Room.inMemoryDatabaseBuilder(context.getApplicationContext(),AppDatabase.class).allowMainThreadQueries().build();
         }
-        return instance
+        return INSTANCE
     }
 
-    private fun create(context: Context): AppDatabase? {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java!!,
-            DB_NAME
-        ).allowMainThreadQueries() //Permite rodar na thread principal
-            //.fallbackToDestructiveMigration() //Ao realizar a migração descomentar este trecho
-            .build()
-    }
 }

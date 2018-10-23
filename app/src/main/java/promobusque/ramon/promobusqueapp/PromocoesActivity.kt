@@ -4,37 +4,39 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_bottom_promobusque.*
+import promobusque.ramon.promobusqueapp.dialogs.ConfiguracaoPromobusqueDialog
+import promobusque.ramon.promobusqueapp.fragments.ConfiguracaoFragment
+import promobusque.ramon.promobusqueapp.fragments.PromocaoFavoritaFragment
+import promobusque.ramon.promobusqueapp.fragments.PromocoesFragment
 import promobusque.ramon.promobusqueapp.modelos.Promocao
 import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
 import promobusque.ramon.promobusqueapp.ui.PromocoesAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.jvm.internal.Intrinsics
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.messaging.FirebaseMessaging
-import promobusque.ramon.promobusqueapp.dialogs.ConfiguracaoPromobusqueDialog
-import promobusque.ramon.promobusqueapp.modelos.ConfiguracaoPromobusque
 
-
-const val TAG: String = "Promobusque"
 
 class PromocoesActivity : AppCompatActivity() {
 
-    val bottomNavigationView: BottomNavigationView? = null
+    val TAG: String = "Promobusque"
     private var mFirebaseAuth: FirebaseAuth? = null
     private var mAuthStateListener: FirebaseAuth.AuthStateListener? = null
     val ANONYMOUS = "anonymous"
+    private val FRAGMENT_PROMOCOES = "FRAGMENT_PROMOCOES"
+    private val FRAGMENT_PROMOCOES_FAVORITAS = "FRAGMENT_PROMOCOES_FAVORITAS"
+    private val FRAGMENT_CONFIG = "FRAGMENT_CONFIG"
 
     //Choose an arbitrary request code value
     private val RC_SIGN_IN = 1
@@ -55,8 +57,7 @@ class PromocoesActivity : AppCompatActivity() {
         //Implementa o login
         implementaLogin()
 
-        //Busca todas as promoções e preenche o adapter
-        preencheAdapter()
+        executaFragmentPromocoes()
     }
 
     private fun inscreverTopicoFirebase() {
@@ -66,33 +67,6 @@ class PromocoesActivity : AppCompatActivity() {
         instance.instanceId.addOnSuccessListener{
             Log.d(TAG, "Firebase iniciado.")
         }
-    }
-
-    private fun preencheAdapter() {
-        val call = RetrofitInitializer().promocaoService().obterPromocoes()
-
-        call.enqueue(object : Callback<List<Promocao>> {
-            override fun onResponse(call: Call<List<Promocao>>?, response: Response<List<Promocao>>?) {
-
-                if (response != null && response.isSuccessful) {
-                    response?.let {
-                        val promocoes: List<Promocao>? = it.body()
-                        atualizaAdapter(promocoes!!)
-                    }
-                } else {
-                    Log.e(TAG, "ocorreu um problema na requisição: " + (response?.errorBody() ?: ""))
-                }
-            }
-
-            override fun onFailure(call: Call<List<Promocao>>?, t: Throwable?) {
-                Log.e(TAG, "ocorreu um problema na requisição: " + (t?.message ?: ""))
-            }
-        })
-
-    }
-
-    fun atualizaAdapter(promocoes: List<Promocao>) {
-        list_view_promocoes.adapter = PromocoesAdapter(promocoes, this@PromocoesActivity)
     }
 
     private fun implementaLogin() {
@@ -150,20 +124,27 @@ class PromocoesActivity : AppCompatActivity() {
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_home -> {
-                abrePromocoesFavoritas()
+            R.id.navigation_promocoes -> {
+                executaFragmentPromocoes()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_dashboard -> {
-                abreDialogConfiguracoes()
+            R.id.navigation_promocoes_favoritas -> {
+                val frag = PromocaoFavoritaFragment()
+                manageFragment(frag, FRAGMENT_PROMOCOES_FAVORITAS)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_notifications -> {
-                message.setText(R.string.title_filters)
+            R.id.navigation_configuracoes -> {
+                val frag = ConfiguracaoFragment()
+                manageFragment(frag , FRAGMENT_CONFIG)
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
+    }
+
+    private fun executaFragmentPromocoes() {
+        val frag = PromocoesFragment()
+        manageFragment(frag, FRAGMENT_PROMOCOES)
     }
 
     private fun abrePromocoesFavoritas() {
@@ -188,11 +169,34 @@ class PromocoesActivity : AppCompatActivity() {
                 return true
             }
             R.id.op_refresh -> {
-                preencheAdapter()
+                executaFragmentPromocoes()
                 return true
             }
 
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    fun manageFragment(fragment: Fragment, tag: String){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.flContainerForFragment as Int, fragment, tag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit()
+    }
+
+    override fun onBackPressed() {
+
+        Log.i("TAG", "" + supportFragmentManager.fragments.size)
+        val fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_PROMOCOES)
+
+        if (fragment != null) {
+            if (fragment.isVisible) {
+                finish()
+                return
+            }
+        }
+
+        super.onBackPressed()
     }
 }

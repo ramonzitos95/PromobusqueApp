@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#1bd824</color>
     <color name="colorFontDefault">#FFF</color>
+    <color name="colorFontFavoritaPromocao">#e0e094</color>
 </resources>

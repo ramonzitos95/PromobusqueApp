@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.form_configuracao_promobusque.view.*
 import promobusque.ramon.promobusqueapp.R
+import promobusque.ramon.promobusqueapp.dao.ConfiguracaoPromobusqueDao
 import promobusque.ramon.promobusqueapp.db.DatabasePromo
 import promobusque.ramon.promobusqueapp.modelos.ConfiguracaoPromobusque
 
@@ -16,7 +17,6 @@ class ConfiguracaoPromobusqueDialog (
     val viewGroup: ViewGroup? = null
 ){
 
-    private val dao = DatabasePromo().getInstance(context!!)!!.configuracaoPromobusqueDao()
     private val viewCriada = criaLayout()
 
 
@@ -30,6 +30,7 @@ class ConfiguracaoPromobusqueDialog (
     }
 
     private fun setaSwitch() {
+        val db = DatabasePromo.getInstance(context)
         val config = this.dao.findById(1)
         if (config != null) {
             this.viewCriada.switch_recebenotificacao.isChecked = config.RecebeNotificacao

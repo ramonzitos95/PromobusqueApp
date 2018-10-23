@@ -2,15 +2,16 @@ package promobusque.ramon.promobusqueapp.ui
 
 import android.content.Context
 import android.content.Intent
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import android.widget.BaseAdapter
 import android.widget.Toast
 import kotlinx.android.synthetic.main.item_promocao_recyclerview.view.*
 import promobusque.ramon.promobusqueapp.DetalhesPromocaoActivity
 import promobusque.ramon.promobusqueapp.R
-import promobusque.ramon.promobusqueapp.TAG
 import promobusque.ramon.promobusqueapp.modelos.Promocao
 
 
@@ -51,11 +52,13 @@ class PromocoesAdapter(
         return this.promocoes.size
     }
 
-    fun ImplementaClickItemRecycler(viewCriada: View, promocao: Promocao) {
+    private fun ImplementaClickItemRecycler(viewCriada: View, promocao: Promocao) {
         viewCriada.setOnClickListener {
             val intent = Intent(context, DetalhesPromocaoActivity::class.java)
             intent.putExtra("promocao", promocao)
             context.startActivity(intent)
         }
     }
+
 }
+
