@@ -57,13 +57,11 @@ class PromocoesFragment : Fragment() {
                 Log.e("Promobusque", "ocorreu um problema na requisição: " + (t?.message ?: ""))
             }
         })
-
     }
 
     fun atualizaAdapter(promocoes: List<Promocao>) {
         list_view_promocoes.adapter = PromocoesAdapter(promocoes, this!!.contexto!!)
     }
-
 
     override fun onAttach(context: Context) {
         contexto = context

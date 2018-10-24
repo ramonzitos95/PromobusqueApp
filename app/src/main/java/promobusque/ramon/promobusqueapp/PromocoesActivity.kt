@@ -16,16 +16,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_bottom_promobusque.*
-import promobusque.ramon.promobusqueapp.dialogs.ConfiguracaoPromobusqueDialog
 import promobusque.ramon.promobusqueapp.fragments.ConfiguracaoFragment
 import promobusque.ramon.promobusqueapp.fragments.PromocaoFavoritaFragment
 import promobusque.ramon.promobusqueapp.fragments.PromocoesFragment
-import promobusque.ramon.promobusqueapp.modelos.Promocao
-import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
-import promobusque.ramon.promobusqueapp.ui.PromocoesAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class PromocoesActivity : AppCompatActivity() {
@@ -153,7 +146,6 @@ class PromocoesActivity : AppCompatActivity() {
     }
 
     private fun abreDialogConfiguracoes() {
-        ConfiguracaoPromobusqueDialog(this, window.decorView as ViewGroup).abre()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

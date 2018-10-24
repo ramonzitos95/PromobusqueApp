@@ -56,4 +56,5 @@ class PromocoesFavoritasAdapter(
             context.startActivity(intent)
         }
     }
+
 }

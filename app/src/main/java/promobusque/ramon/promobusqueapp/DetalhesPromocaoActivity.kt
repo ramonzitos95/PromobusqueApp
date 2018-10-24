@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_detalhes_promocao.*
 import kotlinx.android.synthetic.main.content_detalhes_promocao.*
-import promobusque.ramon.promobusqueapp.db.DatabasePromo
 import promobusque.ramon.promobusqueapp.modelos.Promocao
 import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
 
@@ -126,14 +127,13 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
         }
     }
 
-    private fun adicionarPromocaoAosFavoritos() {
-        if(promocao != null){
-            val promocaoFavoritaDao = DatabasePromo().getInstance(this)?.promocaoFavoritaDao
-            val favorita = promocaoFavoritaDao?.findByIdPromocao(promocao.Id)
+    private lateinit var mFirebaseDatabase: FirebaseDatabase
+    private lateinit var mPromocoesFavoritasDatabaseReference: DatabaseReference
 
-            //Somente serão incluidas promoções favoritas, caso a mesma não foi adicionada na base
-            if(favorita == null)
-                promocaoFavoritaDao?.add(PromocaoFavorita(Nome = promocao.Nome, Descricao = promocao.Descricao, DataValidade = promocao.DataValidade, IdPromocao = promocao.Id, IdEmpresa = promocao.IdEmpresa!!, CepEmpresa = promocao.Empresa?.Cep!!, EnderecoEmpresa = promocao.Empresa!!.Endereco, RazaoSocialEmpresa = promocao.Empresa!!.RazaoSocial, SiteEmpresa = promocao.Empresa!!.Site, Id = 0))
-        }
+    private fun adicionarPromocaoAosFavoritos() {
+        val promocaoFavorita = PromocaoFavorita(Nome = promocao.Nome, Descricao = promocao.Descricao, DataValidade = promocao.DataValidade, IdPromocao = promocao.Id, IdEmpresa = promocao.IdEmpresa!!, CepEmpresa = promocao.Empresa?.Cep!!, EnderecoEmpresa = promocao.Empresa!!.Endereco, RazaoSocialEmpresa = promocao.Empresa!!.RazaoSocial, SiteEmpresa = promocao.Empresa!!.Site, Id = 0)
+        mFirebaseDatabase = FirebaseDatabase.getInstance()
+        mPromocoesFavoritasDatabaseReference = mFirebaseDatabase!!.getReference().child("promocoesfavoritas")
+        mPromocoesFavoritasDatabaseReference.push().setValue(promocaoFavorita)
     }
 }

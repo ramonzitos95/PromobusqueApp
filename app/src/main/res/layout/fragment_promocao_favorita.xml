@@ -5,9 +5,9 @@
              android:layout_height="match_parent"
              tools:context=".fragments.PromocaoFavoritaFragment">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="458dp"
-            android:id="@+id/list_view_promocoes_favoritas" />
+            android:id="@+id/recyclerView" />
 
 </FrameLayout>
