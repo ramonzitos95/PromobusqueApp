@@ -4,11 +4,12 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.fragment_promocao_favorita.*
 import promobusque.ramon.promobusqueapp.R
 import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
 import promobusque.ramon.promobusqueapp.ui.PromocoesFavoritasRecyclerAdapter
@@ -21,38 +22,43 @@ class PromocaoFavoritaFragment : Fragment() {
     private var mChildEventListener: ChildEventListener? = null
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: PromocoesFavoritasRecyclerAdapter
+    private lateinit var mPromocoesFavoritasDatabaseReference: DatabaseReference
+    private var recyclerView: RecyclerView? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater, view: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        //REcycler View
-        linearLayoutManager = LinearLayoutManager(context)
-        recyclerView.layoutManager = linearLayoutManager
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_promocao_favorita, container, false)
+        return inflater.inflate(R.layout.fragment_promocao_favorita, view, false)
     }
 
-    private lateinit var mPromocoesFavoritasDatabaseReference: DatabaseReference
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        promocoesFavoritas = mutableListOf()
+
+        recyclerView = view.findViewById(R.id.recycler_view_favorito)!!
+
+        //Recycler View
+        linearLayoutManager = LinearLayoutManager(activity)
+        recyclerView?.layoutManager = linearLayoutManager
 
         mFirebaseDatabase = FirebaseDatabase.getInstance()
 
         mPromocoesFavoritasDatabaseReference = mFirebaseDatabase!!.reference.child("promocoesfavoritas")
 
         attachDatabaseReadListener()
+
+        setAdapter()
     }
 
     fun attachDatabaseReadListener()
     {
         if(mChildEventListener == null) {
-            val mChildEventListener = object: ChildEventListener{
-                override fun onCancelled(p0: DatabaseError) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            mChildEventListener = object: ChildEventListener{
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.d("FirebaseDatabase", "Erro no RealtimeFirebase: " + databaseError.message)
                 }
 
                 override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -64,18 +70,28 @@ class PromocaoFavoritaFragment : Fragment() {
                     addItem(promocaoFavorita!!)
                 }
 
-                override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-
+                override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
+                    val promocaoFavorita = dataSnapshot.getValue(PromocaoFavorita::class.java)
+                    addItem(promocaoFavorita!!)
                 }
 
                 override fun onChildRemoved(p0: DataSnapshot) {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
-
             }
-        }
 
-        mPromocoesFavoritasDatabaseReference.addChildEventListener(this!!.mChildEventListener!!)
+            mPromocoesFavoritasDatabaseReference.addChildEventListener(mChildEventListener!!)
+        }
+    }
+
+    private fun setAdapter(){
+        val promocoesFavoritasRef = mFirebaseDatabase?.reference?.database?.getReference("promocoesfavoritas");
+
+        if(promocoesFavoritas != null && promocoesFavoritas.isNotEmpty())
+        {
+            adapter = PromocoesFavoritasRecyclerAdapter(promocoesFavoritas)
+            recyclerView?.setAdapter(adapter)
+        }
     }
 
     private fun addItem(promocaoFavorita: PromocaoFavorita) {
