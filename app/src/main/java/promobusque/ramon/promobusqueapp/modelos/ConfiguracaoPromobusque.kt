@@ -3,6 +3,12 @@ package promobusque.ramon.promobusqueapp.modelos
 import java.io.Serializable
 
 class ConfiguracaoPromobusque (
-    val Id: Int,
-    val RecebeNotificacao: Boolean
-) : Serializable
+
+) : Serializable {
+
+    val recebeNotificacao: Boolean = false
+    val idUsuarioFirebase: String = ""
+
+    constructor(recebeNotificacao: Boolean,
+                idUsuarioFirebase: String) : this()
+}

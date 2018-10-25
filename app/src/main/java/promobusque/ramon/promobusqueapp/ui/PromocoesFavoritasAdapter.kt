@@ -24,14 +24,14 @@ class PromocoesFavoritasAdapter(
         val p = promocoes[posicao]
 
         with(viewCriada){
-            textView_datavalidade.text = p.DataValidade
-            textView_descricao.text = p.Descricao
-            textView_nomepromocao.text = p.Nome
-            textView_razaosocial.text = p?.RazaoSocialEmpresa
-            textView_cep.text = p?.CepEmpresa
+            textView_datavalidade.text = p.dataValidade
+            textView_descricao.text = p.descricao
+            textView_nomepromocao.text = p.nome
+            textView_razaosocial.text = p?.razaoSocialEmpresa
+            textView_cep.text = p?.cepEmpresa
         }
 
-        val promocao = Promocao(Nome = p.Nome, IdEmpresa = p.IdEmpresa, DataValidade = p.DataValidade, Descricao = p.DataValidade, IdCategoria = 0, Empresa = null, Id = 0, Situacao = 1)
+        val promocao = Promocao(Nome = p.nome, IdEmpresa = p.idEmpresa, DataValidade = p.dataValidade, Descricao = p.descricao, IdCategoria = 0, Empresa = null, Id = 0, Situacao = 1)
         ImplementaClickItemRecycler(viewCriada, promocao)
 
         return viewCriada

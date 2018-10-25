@@ -140,14 +140,6 @@ class PromocoesActivity : AppCompatActivity() {
         manageFragment(frag, FRAGMENT_PROMOCOES)
     }
 
-    private fun abrePromocoesFavoritas() {
-        val intent = Intent(this,  PromocoesFavoritasActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun abreDialogConfiguracoes() {
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menupromobusque, menu)

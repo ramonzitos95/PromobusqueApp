@@ -51,11 +51,11 @@ class PromocoesFavoritasRecyclerAdapter(private val favoritas: List<PromocaoFavo
             this.promocao = promocao
 
             with(view){
-                textView_datavalidade.text = promocao.DataValidade
-                textView_descricao.text = promocao.Descricao
-                textView_nomepromocao.text = promocao.Nome
-                textView_razaosocial.text = promocao?.RazaoSocialEmpresa
-                textView_cep.text = promocao?.CepEmpresa
+                textView_datavalidade.text = promocao.dataValidade
+                textView_descricao.text = promocao.descricao
+                textView_nomepromocao.text = promocao.nome
+                textView_razaosocial.text = promocao?.razaoSocialEmpresa
+                textView_cep.text = promocao?.cepEmpresa
             }
         }
     }

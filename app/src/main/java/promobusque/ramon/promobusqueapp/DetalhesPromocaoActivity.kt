@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_detalhes_promocao.*
@@ -18,11 +19,14 @@ import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
 class DetalhesPromocaoActivity : AppCompatActivity() {
 
     private lateinit var promocao: Promocao
+    private lateinit var mFirebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalhes_promocao)
         setSupportActionBar(toolbar)
+
+        mFirebaseAuth = FirebaseAuth.getInstance()
 
         preencherCampos()
         setListenerBotaoMapa();
@@ -131,7 +135,20 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
     private lateinit var mPromocoesFavoritasDatabaseReference: DatabaseReference
 
     private fun adicionarPromocaoAosFavoritos() {
-        val promocaoFavorita = PromocaoFavorita(Nome = promocao.Nome, Descricao = promocao.Descricao, DataValidade = promocao.DataValidade, IdPromocao = promocao.Id, IdEmpresa = promocao.IdEmpresa!!, CepEmpresa = promocao.Empresa?.Cep!!, EnderecoEmpresa = promocao.Empresa!!.Endereco, RazaoSocialEmpresa = promocao.Empresa!!.RazaoSocial, SiteEmpresa = promocao.Empresa!!.Site, Id = 0)
+        var myUserId = mFirebaseAuth.currentUser?.uid
+
+        val promocaoFavorita = PromocaoFavorita(idUsuarioFirebase = myUserId.toString(),
+            nome = promocao.Nome,
+            descricao = promocao.Descricao,
+            dataValidade = promocao.DataValidade,
+            idPromocao = promocao.Id,
+            idEmpresa = promocao.IdEmpresa!!,
+            cepEmpresa = promocao.Empresa?.Cep!!,
+            enderecoEmpresa = promocao.Empresa!!.Endereco,
+            razaoSocialEmpresa = promocao.Empresa!!.RazaoSocial,
+            siteEmpresa = promocao.Empresa!!.Site,
+            id = 0)
+
         mFirebaseDatabase = FirebaseDatabase.getInstance()
         mPromocoesFavoritasDatabaseReference = mFirebaseDatabase!!.getReference().child("promocoesfavoritas")
         mPromocoesFavoritasDatabaseReference.push().setValue(promocaoFavorita)

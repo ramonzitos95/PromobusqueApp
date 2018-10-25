@@ -4,60 +4,56 @@ import android.annotation.SuppressLint
 import android.app.Notification.Builder
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.os.Build.VERSION
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import org.json.JSONObject
 import promobusque.ramon.promobusqueapp.R
 import kotlin.jvm.internal.Intrinsics
+import com.google.firebase.iid.FirebaseInstanceId
+import promobusque.ramon.promobusqueapp.modelos.TAG
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
-    override fun onNewToken(s: String?) {
-        Log.e("NEW_TOKEN", s)
+    override fun onNewToken(refreshedToken: String?) {
+        // Get updated InstanceID token.
+        Log.e("NEW_TOKEN", refreshedToken)
         FirebaseMessaging.getInstance().subscribeToTopic("promobusque")
     }
 
-    @SuppressLint("WrongConstant")
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
-        Log.e("JSON_OBJECT", JSONObject(remoteMessage!!.data).toString())
-        val NOTIFICATION_CHANNEL_ID = "promobusque"
-        val pattern = longArrayOf(0, 1000, 500, 1000)
+        // TODO(developer): Handle FCM messages here.
+        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
+        Log.d(TAG, "From: " + remoteMessage?.getFrom());
 
-        var mNotificationManager: NotificationManager? = getSystemService("notification") as NotificationManager?
-        if (mNotificationManager != null) {
-            if (VERSION.SDK_INT >= 26) {
-                val notificationChannel = NotificationChannel(NOTIFICATION_CHANNEL_ID, "Your Notifications", 4)
-                notificationChannel.description = ""
-                notificationChannel.enableLights(true)
-                notificationChannel.lightColor = -16711936
-                notificationChannel.vibrationPattern = pattern
-                notificationChannel.enableVibration(true)
-                mNotificationManager.createNotificationChannel(notificationChannel)
+        // Check if message contains a data payload.
+        if (remoteMessage?.data?.size!! > 0) {
+            Log.d(TAG, "Message data payload: " + remoteMessage?.getData());
+
+            if (/* Check if data needs to be processed by long running job */ true) {
+                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
+
+                //scheduleJob();
+            } else {
+                // Handle message within 10 seconds
+                //handleNow();
             }
 
-            if (VERSION.SDK_INT >= 26) {
-                mNotificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID).canBypassDnd()
-            }
-
-            val notificationBuilder = Builder(this, NOTIFICATION_CHANNEL_ID)
-            val contentTitle = notificationBuilder.setAutoCancel(true)
-                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-                .setContentTitle(getString(R.string.app_name))
-            val notification = remoteMessage.notification
-            if (notification == null) {
-                Intrinsics.throwNpe()
-            }
-            Intrinsics.checkExpressionValueIsNotNull(notification!!, "remoteMessage.notification!!")
-            contentTitle.setContentText(notification.body).setDefaults(-1).setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_notifications_green_24dp).setAutoCancel(true)
-            mNotificationManager.notify(1000, notificationBuilder.build())
-            return
         }
+
+        // Check if message contains a notification payload.
+        if (remoteMessage.notification != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.notification?.body);
+        }
+
+        // Also if you intend on generating your own notifications as a result of a received FCM
+        // message, here is where that should be initiated. See sendNotification method below.
 
     }
 }
