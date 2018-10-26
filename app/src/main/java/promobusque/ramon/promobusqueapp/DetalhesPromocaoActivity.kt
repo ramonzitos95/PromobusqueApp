@@ -91,7 +91,7 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
     }
 
     fun preencherCampos() {
-        promocao = getIntent().getSerializableExtra("promocao") as Promocao
+        promocao = intent.getSerializableExtra("promocao") as Promocao
 
         with(promocao)
         {

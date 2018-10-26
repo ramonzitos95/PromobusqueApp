@@ -84,4 +84,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="receber_notifica_es">Receber notificações</string>
+    <string name="recebe_notificacao">1</string>
 </resources>

@@ -46,22 +46,24 @@ class PromocaoFavoritaFragment : Fragment() {
 
         promocoesFavoritas = mutableListOf()
 
-        recyclerView = view.findViewById(R.id.recycler_view_favorito)!!
-
-        //Recycler View
-        linearLayoutManager = LinearLayoutManager(activity)
-        recyclerView?.layoutManager = linearLayoutManager
+        configuraRecyclerView()
 
         mFirebaseDatabase = FirebaseDatabase.getInstance()
         mFirebaseAuth = FirebaseAuth.getInstance()
 
         mPromocoesFavoritasDatabaseReference = mFirebaseDatabase!!.reference.child("promocoesfavoritas")
 
-        //attachDatabaseReadListener()
-
         setAdapter()
     }
 
+    private fun configuraRecyclerView()
+    {
+        recyclerView = view?.findViewById(R.id.recycler_view_favorito)
+
+        //Recycler View
+        linearLayoutManager = LinearLayoutManager(activity)
+        recyclerView?.layoutManager = linearLayoutManager
+    }
     private fun setAdapter(){
 
         val user = obterIdUsuarioFirebase()
@@ -86,13 +88,13 @@ class PromocaoFavoritaFragment : Fragment() {
 
                     if(promocaoFavorita != null)
                     {
-                        if(promocaoFavorita?.idUsuarioFirebase == myUserId)
+                        if(promocaoFavorita.idUsuarioFirebase.trim() == myUserId.trim())
                             promocoesFavoritas.add(promocaoFavorita)
 
                     }
                 }
 
-                adapter = PromocoesFavoritasRecyclerAdapter(promocoesFavoritas)
+                adapter = contexto?.let { PromocoesFavoritasRecyclerAdapter(promocoesFavoritas, it) }!!
                 adapter.notifyDataSetChanged()
                 recyclerView?.adapter = adapter
 
@@ -101,37 +103,6 @@ class PromocaoFavoritaFragment : Fragment() {
         })
     }
 
-
-
-
-    fun attachDatabaseReadListener()
-    {
-        val myUserId = obterIdUsuarioFirebase()
-        if(mChildEventListener == null) {
-            mChildEventListener = object: ChildEventListener{
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.d("FirebaseDatabase", "Erro no RealtimeFirebase: " + databaseError.message)
-                }
-
-                override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onChildChanged(dataSnapshot: DataSnapshot, p1: String?) {
-                }
-
-                override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
-
-                }
-
-                override fun onChildRemoved(p0: DataSnapshot) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-            }
-
-            mPromocoesFavoritasDatabaseReference.addChildEventListener(mChildEventListener!!)
-        }
-    }
 
     private fun obterIdUsuarioFirebase() : String {
         return mFirebaseAuth?.currentUser?.uid!!
