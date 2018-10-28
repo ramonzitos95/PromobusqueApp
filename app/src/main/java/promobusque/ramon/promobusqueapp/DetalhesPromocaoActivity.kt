@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -14,6 +15,10 @@ import kotlinx.android.synthetic.main.activity_detalhes_promocao.*
 import kotlinx.android.synthetic.main.content_detalhes_promocao.*
 import promobusque.ramon.promobusqueapp.modelos.Promocao
 import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
+import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class DetalhesPromocaoActivity : AppCompatActivity() {
@@ -29,9 +34,24 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
         mFirebaseAuth = FirebaseAuth.getInstance()
 
         preencherCampos()
+        contaVisitasPromocao()
         setListenerBotaoMapa();
         setListenerBotaoCompartilhar();
         setListenerBotaoSite();
+    }
+
+    private fun contaVisitasPromocao() {
+        //Adiciona um contador de visita a promoção
+        RetrofitInitializer().promocaoService().addVisitaPromocao(promocao.Id)
+            .enqueue(object: Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    Log.i(promobusque.ramon.promobusqueapp.modelos.TAG, "Visita adicionada a promoção ${promocao.Id} - ${promocao.Nome}")
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Log.e(promobusque.ramon.promobusqueapp.modelos.TAG, "ocorreu um erro ao adicionar visita: ${t.message}")
+                }
+            })
     }
 
     private fun setListenerBotaoSite() {
@@ -152,5 +172,21 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
         mFirebaseDatabase = FirebaseDatabase.getInstance()
         mPromocoesFavoritasDatabaseReference = mFirebaseDatabase!!.getReference().child("promocoesfavoritas")
         mPromocoesFavoritasDatabaseReference.push().setValue(promocaoFavorita)
+
+        contaFavoritosEmpresa()
+    }
+
+    private fun contaFavoritosEmpresa() {
+        //Adiciona um contador de visita a promoção
+        RetrofitInitializer().empresaService().AddQuantidadeFavorito(promocao.IdEmpresa!!)
+            .enqueue(object: Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    Log.i(promobusque.ramon.promobusqueapp.modelos.TAG, "favoritada adicionada a empresa ${promocao.IdEmpresa} - ${promocao.Empresa?.RazaoSocial}")
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Log.e(promobusque.ramon.promobusqueapp.modelos.TAG, "ocorreu um erro ao adicionar favorito: ${t.message}")
+                }
+            })
     }
 }
