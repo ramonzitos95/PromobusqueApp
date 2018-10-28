@@ -31,7 +31,17 @@ class PromocoesFavoritasAdapter(
             textView_cep.text = p?.cepEmpresa
         }
 
-        val promocao = Promocao(Nome = p.nome, IdEmpresa = p.idEmpresa, DataValidade = p.dataValidade, Descricao = p.descricao, IdCategoria = 0, Empresa = null, Id = 0, Situacao = 1)
+        val promocao = Promocao(
+            0,
+            p.nome,
+            p.descricao,
+            1,
+            p.dataValidade,
+            p.idEmpresa,
+            0,
+            null
+        )
+
         ImplementaClickItemRecycler(viewCriada, promocao)
 
         return viewCriada

@@ -49,8 +49,16 @@ class PromocoesFavoritasRecyclerAdapter(private val favoritas: List<PromocaoFavo
             Log.d("RecyclerView", "CLICK!")
 
             var empresa = Empresa(Nome = promocao?.razaoSocialEmpresa, Endereco = promocao?.enderecoEmpresa, Site = promocao?.siteEmpresa, Cep = promocao?.siteEmpresa)!!
-            val promo = Promocao(Id = 0, Situacao = 1, IdCategoria = 0, Descricao = promocao?.descricao!!, DataValidade = promocao?.dataValidade!!, IdEmpresa = promocao?.idEmpresa, Nome = promocao?.nome!!,
-                Empresa = empresa)
+            val promo = Promocao(
+                0,
+                promocao?.nome!!,
+                promocao?.descricao!!,
+                1,
+                promocao?.dataValidade!!,
+                promocao?.idEmpresa,
+                0,
+                empresa
+            )
 
             val intent = Intent(this.context, DetalhesPromocaoActivity::class.java)
 

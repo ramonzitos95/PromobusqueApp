@@ -58,7 +58,7 @@ class PromocaoFavoritaFragment : Fragment() {
 
     private fun configuraRecyclerView()
     {
-        recyclerView = view?.findViewById(R.id.recycler_view_favorito)
+        recyclerView = view?.findViewById<RecyclerView>(R.id.recycler_view_favorito)
 
         //Recycler View
         linearLayoutManager = LinearLayoutManager(activity)

@@ -8,11 +8,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListView
+import android.widget.MultiAutoCompleteTextView
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_promocoes.*
 import promobusque.ramon.promobusqueapp.R
 import promobusque.ramon.promobusqueapp.modelos.Promocao
+import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
+import promobusque.ramon.promobusqueapp.modelos.TAG
 import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
 import promobusque.ramon.promobusqueapp.ui.PromocoesAdapter
+import promobusque.ramon.promobusqueapp.ui.PromocoesFavoritasRecyclerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,6 +26,12 @@ import retrofit2.Response
 class PromocoesFragment : Fragment() {
 
     var contexto: Context? = null
+    private var mFirebaseDatabase: FirebaseDatabase? = null
+    private lateinit var mPromocoesDatabaseReference: DatabaseReference
+
+    //Duas listas vinda de locais diferentes
+    private var promocoesApi: MutableList<Promocao>? = mutableListOf()
+    private var promocoesFirebase: MutableList<Promocao>? = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,12 +44,19 @@ class PromocoesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Busca todas as promoções e preenche o adapter
-        this.preencheAdapter()
+        mFirebaseDatabase = FirebaseDatabase.getInstance()
+        mPromocoesDatabaseReference = mFirebaseDatabase!!.reference.child("promocoes")
 
     }
 
-    private fun preencheAdapter() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //Busca todas as promoções e preenche o adapter
+        this.consultaPromocoesApi()
+    }
+
+    private fun consultaPromocoesApi() {
         val call = RetrofitInitializer().promocaoService().obterPromocoes()
 
         call.enqueue(object : Callback<List<Promocao>> {
@@ -45,28 +64,82 @@ class PromocoesFragment : Fragment() {
 
                 if (response != null && response.isSuccessful) {
                     response?.let {
-                        val promocoes: List<Promocao>? = it.body()
-                        atualizaAdapter(promocoes!!)
+                        promocoesApi = it.body() as MutableList<Promocao>
+                        salvaPromocoesFirebase(promocoesApi)
+                        configuraAdapter(promocoesApi!!)
                     }
                 } else {
                     Log.e("Promobusque", "ocorreu um problema na requisição: " + (response?.errorBody() ?: ""))
+                    consultaPromocoesFirebase()
                 }
             }
 
             override fun onFailure(call: Call<List<Promocao>>?, t: Throwable?) {
                 Log.e("Promobusque", "ocorreu um problema na requisição: " + (t?.message ?: ""))
+                consultaPromocoesFirebase()
             }
         })
     }
 
+    //Salva as promoções no firebase, primeiramente as excluindo e depois inserindo
+    private fun salvaPromocoesFirebase(promocoesApi: List<Promocao>?) {
+        if(promocoesApi?.size!! > 0)
+            excluiPromocoes()
+
+        for(promo in promocoesApi)
+        {
+            mPromocoesDatabaseReference.push().setValue(promo)
+        }
+
+    }
+
+    private fun consultaPromocoesFirebase()
+    {
+        val reference = mPromocoesDatabaseReference.orderByChild("dataValidade")
+
+        reference.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(erroDatabase: DatabaseError) {
+                val message = erroDatabase.message
+                Log.d(TAG,"Erro no firebase db: $message ")
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d(TAG,"Snapshot promoção: $snapshot")
+
+                for (promocao in snapshot.children)
+                {
+                    var promocao = promocao.getValue(Promocao::class.java)
+
+                    if(promocao != null)
+                        promocoesFirebase?.add(promocao)
+
+                }
+
+                configuraAdapter(promocoesFirebase!!)
+            }
+
+        })
+    }
+
+    private fun excluiPromocoes() {
+        mPromocoesDatabaseReference.removeValue()
+    }
+
+    private fun configuraAdapter(promocoes: MutableList<Promocao>) {
+        atualizaAdapter(promocoes!!)
+    }
+
     fun atualizaAdapter(promocoes: List<Promocao>) {
-        list_view_promocoes.adapter = PromocoesAdapter(promocoes, this!!.contexto!!)
+
+        val list_view_promocoes = view?.findViewById<ListView>(R.id.list_view_promocoes)
+        if(promocoes.isNotEmpty() && list_view_promocoes != null)
+            list_view_promocoes?.adapter = PromocoesAdapter(promocoes, this!!.contexto!!)
+
     }
 
     override fun onAttach(context: Context) {
         contexto = context
         super.onAttach(context)
     }
-
 
 }
