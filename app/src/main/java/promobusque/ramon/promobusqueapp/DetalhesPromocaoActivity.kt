@@ -9,8 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_detalhes_promocao.*
 import kotlinx.android.synthetic.main.content_detalhes_promocao.*
 import promobusque.ramon.promobusqueapp.modelos.Promocao
@@ -25,6 +24,8 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     private lateinit var promocao: Promocao
     private lateinit var mFirebaseAuth: FirebaseAuth
+    private var myUserId = ""
+    var registroFavoritaEncontrada : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +33,19 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         mFirebaseAuth = FirebaseAuth.getInstance()
+        myUserId = mFirebaseAuth.currentUser?.uid.toString()
 
         preencherCampos()
         contaVisitasPromocao()
-        setListenerBotaoMapa();
-        setListenerBotaoCompartilhar();
-        setListenerBotaoSite();
+        setListenerBotaoMapa()
+        setListenerBotaoCompartilhar()
+        setListenerBotaoSite()
+        configuraBandoDeDados()
+    }
+
+    private fun configuraBandoDeDados() {
+        mFirebaseDatabase = FirebaseDatabase.getInstance()
+        mPromocoesFavoritasDatabaseReference = mFirebaseDatabase!!.getReference().child("promocoesfavoritas")
     }
 
     private fun contaVisitasPromocao() {
@@ -143,7 +151,7 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.op_favorite_promocao -> {
-                adicionarPromocaoAosFavoritos()
+                verificaSePromocaoFoiAdicionadaAosFavoritos()
                 return true
             }
 
@@ -154,26 +162,51 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
     private lateinit var mFirebaseDatabase: FirebaseDatabase
     private lateinit var mPromocoesFavoritasDatabaseReference: DatabaseReference
 
+    private fun verificaSePromocaoFoiAdicionadaAosFavoritos() {
+
+        var query = mPromocoesFavoritasDatabaseReference.orderByKey()
+        query.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                Log.e("Erro Consulta promo favoritas: ", p0.message)
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (favorita in snapshot.children) {
+                    var f = favorita.getValue(PromocaoFavorita::class.java)
+                    if (f?.idPromocao == promocao.Id) {
+                        registroFavoritaEncontrada = true
+                        break
+                    }
+                }
+
+                adicionarPromocaoAosFavoritos()
+            }
+
+        })
+    }
+
     private fun adicionarPromocaoAosFavoritos() {
-        var myUserId = mFirebaseAuth.currentUser?.uid
+        if(!registroFavoritaEncontrada)
+        {
+            val promocaoFavorita = PromocaoFavorita(idUsuarioFirebase = myUserId.toString(),
+                nome = promocao.Nome,
+                descricao = promocao.Descricao,
+                dataValidade = promocao.DataValidade,
+                idPromocao = promocao.Id,
+                idEmpresa = promocao.IdEmpresa!!,
+                cepEmpresa = promocao.Empresa?.Cep!!,
+                enderecoEmpresa = promocao.Empresa!!.Endereco,
+                razaoSocialEmpresa = promocao.Empresa!!.RazaoSocial,
+                siteEmpresa = promocao.Empresa!!.Site,
+                id = 0)
 
-        val promocaoFavorita = PromocaoFavorita(idUsuarioFirebase = myUserId.toString(),
-            nome = promocao.Nome,
-            descricao = promocao.Descricao,
-            dataValidade = promocao.DataValidade,
-            idPromocao = promocao.Id,
-            idEmpresa = promocao.IdEmpresa!!,
-            cepEmpresa = promocao.Empresa?.Cep!!,
-            enderecoEmpresa = promocao.Empresa!!.Endereco,
-            razaoSocialEmpresa = promocao.Empresa!!.RazaoSocial,
-            siteEmpresa = promocao.Empresa!!.Site,
-            id = 0)
+            mPromocoesFavoritasDatabaseReference.push().setValue(promocaoFavorita)
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance()
-        mPromocoesFavoritasDatabaseReference = mFirebaseDatabase!!.getReference().child("promocoesfavoritas")
-        mPromocoesFavoritasDatabaseReference.push().setValue(promocaoFavorita)
-
-        contaFavoritosEmpresa()
+            contaFavoritosEmpresa()
+        }
+        else{
+            Toast.makeText(this, "Promoção já adicionada aos favoritos", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun contaFavoritosEmpresa() {

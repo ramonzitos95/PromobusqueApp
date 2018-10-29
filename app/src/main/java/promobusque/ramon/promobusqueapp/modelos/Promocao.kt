@@ -9,8 +9,8 @@ class Promocao () : Serializable
     val Descricao: String = ""
     val Situacao: Int = 0
     val DataValidade: String = ""
-    val IdEmpresa: Long? = null
-    val IdCategoria: Long? = null
+    val IdEmpresa: Long? = 0
+    val IdCategoria: Long? = 0
     val Empresa: Empresa? = null
 
     constructor(Id: Long,
