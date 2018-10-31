@@ -64,6 +64,7 @@ class PromocaoFavoritaFragment : Fragment() {
         linearLayoutManager = LinearLayoutManager(activity)
         recyclerView?.layoutManager = linearLayoutManager
     }
+
     private fun setAdapter(){
 
         val user = obterIdUsuarioFirebase()

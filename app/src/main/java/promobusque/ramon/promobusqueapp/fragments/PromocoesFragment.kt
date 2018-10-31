@@ -4,6 +4,8 @@ package promobusque.ramon.promobusqueapp.fragments
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +21,7 @@ import promobusque.ramon.promobusqueapp.modelos.TAG
 import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
 import promobusque.ramon.promobusqueapp.ui.PromocoesAdapter
 import promobusque.ramon.promobusqueapp.ui.PromocoesFavoritasRecyclerAdapter
+import promobusque.ramon.promobusqueapp.ui.PromocoesRecyclerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +35,8 @@ class PromocoesFragment : Fragment() {
     //Duas listas vinda de locais diferentes
     private var promocoesApi: MutableList<Promocao>? = mutableListOf()
     private var promocoesFirebase: MutableList<Promocao>? = mutableListOf()
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private var recyclerView: RecyclerView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +56,8 @@ class PromocoesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        configuraRecyclerView()
 
         //Busca todas as promoções e preenche o adapter
         this.consultaPromocoesApi()
@@ -130,11 +137,18 @@ class PromocoesFragment : Fragment() {
     }
 
     fun atualizaAdapter(promocoes: List<Promocao>) {
+        if(promocoes.isNotEmpty())
+            recyclerView?.adapter = PromocoesRecyclerAdapter(promocoes, this.contexto!!)
 
-        val list_view_promocoes = view?.findViewById<ListView>(R.id.list_view_promocoes)
-        if(promocoes.isNotEmpty() && list_view_promocoes != null)
-            list_view_promocoes?.adapter = PromocoesAdapter(promocoes, this!!.contexto!!)
+    }
 
+    private fun configuraRecyclerView()
+    {
+        recyclerView = view?.findViewById<RecyclerView>(R.id.recycler_view_promocoes)!!
+
+        //Recycler View
+        linearLayoutManager = LinearLayoutManager(activity)
+        recyclerView!!.layoutManager = linearLayoutManager
     }
 
     override fun onAttach(context: Context) {

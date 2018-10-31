@@ -4,14 +4,14 @@ import java.io.Serializable
 
 class Promocao () : Serializable
 {
-    val Id: Long = 0
-    val Nome: String = ""
-    val Descricao: String = ""
-    val Situacao: Int = 0
-    val DataValidade: String = ""
-    val IdEmpresa: Long? = 0
-    val IdCategoria: Long? = 0
-    val Empresa: Empresa? = null
+    var Id: Long = 0
+    var Nome: String = ""
+    var Descricao: String = ""
+    var Situacao: Int = 0
+    var DataValidade: String = ""
+    var IdEmpresa: Long? = 0
+    var IdCategoria: Long? = 0
+    var Empresa: Empresa? = null
 
     constructor(Id: Long,
                 Nome: String,
@@ -20,5 +20,15 @@ class Promocao () : Serializable
                 DataValidade: String,
                 IdEmpresa: Long?,
                 IdCategoria: Long?,
-                Empresa: Empresa?) : this()
+                Empresa: Empresa?) : this() {
+
+        this.Id = Id
+        this.Nome = Nome
+        this.Descricao = Descricao
+        this.Situacao = Situacao
+        this.DataValidade = DataValidade
+        this.IdEmpresa = IdEmpresa
+        this.IdCategoria = IdCategoria
+        this.Empresa = Empresa
+    }
 }

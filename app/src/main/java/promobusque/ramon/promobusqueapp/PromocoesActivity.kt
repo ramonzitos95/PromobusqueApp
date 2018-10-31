@@ -51,6 +51,14 @@ class PromocoesActivity : AppCompatActivity() {
         implementaLogin()
 
         executaFragmentPromocoes()
+
+        customizarActionBar()
+    }
+
+    fun customizarActionBar(){
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setHomeButtonEnabled(true)
+        actionBar?.title = "Promobusque"
     }
 
     private fun inscreverTopicoFirebase() {
@@ -155,6 +163,11 @@ class PromocoesActivity : AppCompatActivity() {
             R.id.op_refresh -> {
                 executaFragmentPromocoes()
                 return true
+            }
+
+            R.id.home -> {
+                finish()
+                return true;
             }
 
             else -> return super.onOptionsItemSelected(item)

@@ -36,11 +36,27 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
         myUserId = mFirebaseAuth.currentUser?.uid.toString()
 
         preencherCampos()
+
         contaVisitasPromocao()
+
         setListenerBotaoMapa()
+
         setListenerBotaoCompartilhar()
+
         setListenerBotaoSite()
+
         configuraBandoDeDados()
+
+        customizarActionBar()
+    }
+
+    fun customizarActionBar(){
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        if(promocao.Nome.isNotEmpty())
+            supportActionBar?.title = "Promoção: ${promocao.Nome}"
+        else
+            supportActionBar?.title = "Promoção"
     }
 
     private fun configuraBandoDeDados() {
@@ -155,6 +171,11 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
                 return true
             }
 
+            R.id.home -> {
+                finish()
+                return true;
+            }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -193,11 +214,11 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
                 descricao = promocao.Descricao,
                 dataValidade = promocao.DataValidade,
                 idPromocao = promocao.Id,
-                idEmpresa = promocao.IdEmpresa!!,
-                cepEmpresa = promocao.Empresa?.Cep!!,
-                enderecoEmpresa = promocao.Empresa!!.Endereco,
-                razaoSocialEmpresa = promocao.Empresa!!.RazaoSocial,
-                siteEmpresa = promocao.Empresa!!.Site,
+                idEmpresa = promocao.IdEmpresa ?: 0,
+                cepEmpresa = promocao?.Empresa?.Cep ?: "",
+                enderecoEmpresa = promocao?.Empresa?.Endereco ?: "",
+                razaoSocialEmpresa = promocao?.Empresa?.RazaoSocial ?: "",
+                siteEmpresa = promocao?.Empresa?.Site ?: "",
                 id = 0)
 
             mPromocoesFavoritasDatabaseReference.push().setValue(promocaoFavorita)
@@ -206,6 +227,7 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
         }
         else{
             Toast.makeText(this, "Promoção já adicionada aos favoritos", Toast.LENGTH_SHORT).show()
+            registroFavoritaEncontrada = false
         }
     }
 
@@ -221,5 +243,15 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
                     Log.e(promobusque.ramon.promobusqueapp.modelos.TAG, "ocorreu um erro ao adicionar favorito: ${t.message}")
                 }
             })
+    }
+
+    override fun onBackPressed() {
+
+        //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
+        startActivity(Intent(this, PromocoesActivity::class.java))
+        //O efeito ao ser pressionado do botão (no caso abre a activity)
+        finishAffinity();  //Método para matar a activity e não deixa-lá indexada na pilhagem
+
+        super.onBackPressed()
     }
 }
