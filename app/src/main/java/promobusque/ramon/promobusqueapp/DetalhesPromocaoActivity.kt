@@ -15,6 +15,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_detalhes_promocao.*
 import kotlinx.android.synthetic.main.content_detalhes_promocao.*
 import promobusque.ramon.promobusqueapp.dialogs.DialogEnviarPromocaoWhats
+import promobusque.ramon.promobusqueapp.dialogs.DialogParticiparPromocao
 import promobusque.ramon.promobusqueapp.modelos.Promocao
 import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
 import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
@@ -48,9 +49,18 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
         setListenerBotaoSite()
 
+        setListemerBotaoParticipar()
+
         configuraBandoDeDados()
 
         customizarActionBar()
+    }
+
+    private fun setListemerBotaoParticipar() {
+        button_participar.setOnClickListener {
+            val dialog = DialogParticiparPromocao(contexto = this, viewGroup = window.decorView as ViewGroup, promocao = promocao)
+            dialog.CriaDialogo()
+        }
     }
 
     fun customizarActionBar(){

@@ -20,6 +20,7 @@
             <Button android:textColor="@color/colorFontDefault" android:layout_gravity="center" android:id="@+id/button_mapa" android:background="@color/colorPrimary" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Ver localização" />
             <Button android:textColor="@color/colorFontDefault" android:layout_gravity="center" android:id="@+id/button_compartilhar" android:background="@color/colorPrimary" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Compartilhar promoção" />
             <Button android:textColor="@color/colorFontDefault" android:layout_gravity="center" android:id="@+id/button_visitar_site" android:background="@color/colorPrimary" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Visitar site" />
+            <Button android:textColor="@color/colorFontDefault" android:layout_gravity="center" android:id="@+id/button_participar" android:background="@color/colorPrimary" android:layout_width="340.0dip" android:layout_height="40.0dip" android:layout_marginTop="5.0dip" android:text="Participar" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
