@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_detalhes_promocao.*
 import kotlinx.android.synthetic.main.content_detalhes_promocao.*
+import promobusque.ramon.promobusqueapp.dialogs.DialogEnviarPromocaoWhats
 import promobusque.ramon.promobusqueapp.modelos.Promocao
 import promobusque.ramon.promobusqueapp.modelos.PromocaoFavorita
 import promobusque.ramon.promobusqueapp.retrofit.RetrofitInitializer
@@ -105,16 +108,19 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
     }
 
     fun compartilharPromocao() {
-        val textoCompartilhamento: StringBuilder = StringBuilder()
-        textoCompartilhamento.appendln("Promoção: " + promocao.Nome)
-        textoCompartilhamento.appendln("Descrição: " + promocao.Descricao)
-        textoCompartilhamento.append("Local: " + promocao.Empresa?.Endereco)
 
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        intent.type = "text/plain"
-        intent.putExtra(Intent.EXTRA_STREAM,textoCompartilhamento.toString())
-        startActivity(Intent.createChooser(intent, "Compartilhar promoção"))
+        val textoCompartilhamento: StringBuilder = StringBuilder()
+        textoCompartilhamento.append("Promoção: " + promocao.Nome)
+        textoCompartilhamento.append(" Descrição: " + promocao.Descricao)
+        textoCompartilhamento.append(" Local: " + promocao.Empresa?.Endereco)
+
+        var dialog = DialogEnviarPromocaoWhats(
+            contexto = this,
+            textoCompartilhamento = textoCompartilhamento.toString(),
+            viewGroup = window.decorView as ViewGroup
+        )
+
+        dialog.CriaDialogo()
     }
 
     private fun setListenerBotaoMapa() {
