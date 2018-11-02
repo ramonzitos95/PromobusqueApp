@@ -31,6 +31,8 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
     private var myUserId = ""
     var registroFavoritaEncontrada : Boolean = false
 
+    private var modulo: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalhes_promocao)
@@ -105,13 +107,19 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     //Abre site do estabelecimento
     fun abrirSiteEstabelecimento(){
-        if(promocao.Empresa != null && !(promocao.Empresa?.Site.isNullOrEmpty()))
+        var url = promocao.Empresa?.Site.toString()
+        if(promocao.Empresa != null && !url.isNullOrEmpty())
         {
+            if (!url.startsWith("http://") && !url.startsWith("https://")){
+                url = "http://$url";
+            }
+
             val i = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(promocao.Empresa?.Site)
+                Uri.parse(url)
             )
             startActivity(i)
+
         } else {
             Toast.makeText(this, "Este estabelecimento não possue site!", Toast.LENGTH_SHORT ).show()
         }
@@ -169,18 +177,23 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
                     if(!(Cep.isEmpty()))
                         text_cep.text = "Cep: $Cep"
+
+                    if(RazaoSocial.isNotEmpty())
+                        text_razaosocial.text = "Razão social: $RazaoSocial"
                 }
             }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_detalhes_promocao, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
             R.id.op_favorite_promocao -> {
                 verificaSePromocaoFoiAdicionadaAosFavoritos()

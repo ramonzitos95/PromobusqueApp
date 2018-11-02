@@ -17,6 +17,8 @@ class PromocoesFavoritasAdapter(
     private val context: Context
 ) : BaseAdapter() {
 
+    val MODULO: String = "PROMOCOES_FAVORITAS"
+
     override fun getView(posicao: Int, view: View?, parent: ViewGroup?): View {
         val viewCriada = LayoutInflater.from(context)
             .inflate(R.layout.item_promocaofavorita_recyclerview, parent, false)
@@ -63,6 +65,7 @@ class PromocoesFavoritasAdapter(
         viewCriada.setOnClickListener {
             val intent = Intent(context, DetalhesPromocaoActivity::class.java)
             intent.putExtra("promocao", promocao)
+            intent.putExtra("modulo", MODULO.toString())
             context.startActivity(intent)
         }
     }
