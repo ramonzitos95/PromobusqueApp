@@ -15,7 +15,8 @@
             android:roundIcon="@drawable/icone_promobusque"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
-            tools:ignore="GoogleAppIndexingWarning">
+            tools:ignore="GoogleAppIndexingWarning"
+            android:usesCleartextTraffic="true">
         <activity android:name=".PromocoesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

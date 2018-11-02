@@ -85,7 +85,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="receber_notifica_es">Receber notificações</string>
     <string name="recebe_notificacao">1</string>
-    <string name="o_c_digo_gerado_poder_ser_utilizado_no_estabelecimento_comercial">O código gerado poderá ser utilizado
-        no estabelecimento
+    <string name="o_c_digo_gerado_poder_ser_utilizado_no_estabelecimento_comercial">O QrCode gerado poderá ser lido pelo anunciante, apresentar o mesmo no local da promoção
     </string>
 </resources>

@@ -60,9 +60,10 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
     private fun setListemerBotaoParticipar() {
         button_participar.setOnClickListener {
-            val dialog = DialogParticiparPromocao(contexto = this, viewGroup = window.decorView as ViewGroup, promocao = promocao)
+            val dialog = DialogParticiparPromocao(contexto = this, viewGroup = window.decorView as ViewGroup, promocao = promocao, resources = resources, idUsuarioFirebase = myUserId)
             dialog.CriaDialogo()
         }
+
     }
 
     fun customizarActionBar(){

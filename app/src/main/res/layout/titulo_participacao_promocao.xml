@@ -6,7 +6,9 @@
     <TextView
             android:text="@string/o_c_digo_gerado_poder_ser_utilizado_no_estabelecimento_comercial"
             android:lines="3"
-            android:textSize="16sp"
+            android:textAlignment="center"
+            android:paddingTop="10dp"
+            android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView_titulo_gerado"/>
