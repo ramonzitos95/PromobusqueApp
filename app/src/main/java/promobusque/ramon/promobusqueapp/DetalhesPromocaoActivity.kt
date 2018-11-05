@@ -223,11 +223,16 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (favorita in snapshot.children) {
+
                     var f = favorita.getValue(PromocaoFavorita::class.java)
-                    if (f?.idPromocao == promocao.Id) {
+
+                    if (f?.idPromocao == promocao.Id && f.idUsuarioFirebase == myUserId) {
                         registroFavoritaEncontrada = true
                         break
                     }
+
+                    if(registroFavoritaEncontrada)
+                        break
                 }
 
                 adicionarPromocaoAosFavoritos()
@@ -257,7 +262,6 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
         }
         else{
             Toast.makeText(this, "Promoção já adicionada aos favoritos", Toast.LENGTH_SHORT).show()
-            registroFavoritaEncontrada = false
         }
     }
 

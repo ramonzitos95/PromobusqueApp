@@ -30,7 +30,7 @@ class HelperQrCode(
         // have the object build the directory structure, if needed.
 
         if (!wallpaperDirectory.exists()) {
-            Log.d("dirrrrrr", "" + wallpaperDirectory.mkdirs())
+            Log.d("criado pasta qr code", "" + wallpaperDirectory.mkdirs())
             wallpaperDirectory.mkdirs()
         }
 

@@ -89,7 +89,7 @@ class PromocaoFavoritaFragment : Fragment() {
 
                     if(promocaoFavorita != null)
                     {
-                        if(promocaoFavorita.idUsuarioFirebase.trim() == myUserId.trim())
+                        if(promocaoFavorita.idUsuarioFirebase == myUserId)
                             promocoesFavoritas.add(promocaoFavorita)
 
                     }

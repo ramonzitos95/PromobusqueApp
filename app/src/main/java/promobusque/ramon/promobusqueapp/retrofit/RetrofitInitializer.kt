@@ -8,7 +8,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class RetrofitInitializer {
 
-    private val url = "http://192.168.1.6:8000"
+    private val url = "http://192.168.1.4:8000"
     private val retrofit = Retrofit.Builder()
                                     .baseUrl(url)
                                     .addConverterFactory(MoshiConverterFactory.create())

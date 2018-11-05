@@ -95,16 +95,19 @@ class DialogParticiparPromocao(val contexto: Context,
     private fun enviarParticipacaoParaApi() {
 
         val participacao = Participacao(
-            codigoGerado = codigoParticipacao,
-            idUsuarioFirebase = idUsuarioFirebase,
-            idEmpresa = promocao?.IdEmpresa ?: 0,
-            idPromocao = promocao.Id)
+            CodigoGerado = codigoParticipacao,
+            IdUsuarioFirebase = idUsuarioFirebase,
+            IdEmpresa = promocao?.IdEmpresa ?: 0,
+            IdPromocao = promocao.Id)
 
         val call = RetrofitInitializer().participacaoService()
             .Gravar(participacao)
             .enqueue(object: Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                Log.i(promobusque.ramon.promobusqueapp.modelos.TAG, "participação incluida com sucesso ${promocao.IdEmpresa} - ${promocao.Empresa?.RazaoSocial}")
+                if(response.isSuccessful)
+                    Log.i(promobusque.ramon.promobusqueapp.modelos.TAG, "participação incluida com sucesso ${promocao.IdEmpresa} - ${promocao.Empresa?.RazaoSocial}, mensagem: ${response.message()}")
+                else
+                    Log.i(promobusque.ramon.promobusqueapp.modelos.TAG, "Ocorreu um erro ao incluir participação ${response.message()}")
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
