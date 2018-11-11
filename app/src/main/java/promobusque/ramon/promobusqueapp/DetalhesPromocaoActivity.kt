@@ -1,8 +1,10 @@
 package promobusque.ramon.promobusqueapp
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -129,9 +131,10 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
     fun compartilharPromocao() {
 
         val textoCompartilhamento: StringBuilder = StringBuilder()
-        textoCompartilhamento.append("Promoção: " + promocao.Nome)
-        textoCompartilhamento.append(" Descrição: " + promocao.Descricao)
-        textoCompartilhamento.append(" Local: " + promocao.Empresa?.Endereco)
+        textoCompartilhamento.appendln("Promoção: " + promocao.Nome)
+        textoCompartilhamento.appendln("Descrição: " + promocao.Descricao)
+        textoCompartilhamento.appendln("Estabelecimento: " + promocao.Empresa?.RazaoSocial)
+        textoCompartilhamento.appendln("Local: " + promocao.Empresa?.Endereco)
 
         var dialog = DialogEnviarPromocaoWhats(
             contexto = this,
@@ -279,13 +282,9 @@ class DetalhesPromocaoActivity : AppCompatActivity() {
             })
     }
 
-    override fun onBackPressed() {
-
-        //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
-        startActivity(Intent(this, PromocoesActivity::class.java))
-        //O efeito ao ser pressionado do botão (no caso abre a activity)
-        finishAffinity();  //Método para matar a activity e não deixa-lá indexada na pilhagem
-
-        super.onBackPressed()
+    override fun onBackPressed() { //Botão BACK padrão do android
+      finish()
     }
+
+
 }

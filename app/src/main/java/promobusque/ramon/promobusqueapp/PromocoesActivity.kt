@@ -1,10 +1,12 @@
 package promobusque.ramon.promobusqueapp
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -157,7 +159,7 @@ class PromocoesActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sign_out_menu -> {
-                AuthUI.getInstance().signOut(this)
+                configuraAlertaParaSair()
                 return true
             }
             R.id.op_refresh -> {
@@ -194,6 +196,23 @@ class PromocoesActivity : AppCompatActivity() {
             }
         }
 
+        configuraAlertaParaSair()
+
         super.onBackPressed()
+    }
+
+    fun configuraAlertaParaSair(){
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Sair")
+        builder.setMessage("Deseja realmente sair?")
+        builder.setPositiveButton("Sim") { _: DialogInterface, i: Int ->
+            AuthUI.getInstance().signOut(this)
+        }
+        builder.setNegativeButton("Não") { _: DialogInterface, i: Int ->
+
+        }
+        val alerta = builder.create()
+        alerta.show()
     }
 }

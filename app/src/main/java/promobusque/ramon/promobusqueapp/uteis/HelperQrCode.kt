@@ -29,23 +29,40 @@ class HelperQrCode(
             Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY)
         // have the object build the directory structure, if needed.
 
-        if (!wallpaperDirectory.exists()) {
-            Log.d("criado pasta qr code", "" + wallpaperDirectory.mkdirs())
-            wallpaperDirectory.mkdirs()
-        }
+//        if (!wallpaperDirectory.exists()) {
+//            Log.d("criado pasta", "" + wallpaperDirectory.mkdirs())
+//            wallpaperDirectory.mkdirs()
+//        }
 
         try {
-            val f = File(wallpaperDirectory, Calendar.getInstance()
-                .timeInMillis.toString() + ".jpg")
-            f.createNewFile()   //give read write permission
-            val fo = FileOutputStream(f)
-            fo.write(bytes.toByteArray())
+//            val f = File(wallpaperDirectory, Calendar.getInstance()
+//                .timeInMillis.toString() + ".jpg")
+//            f.createNewFile()   //give read write permission
+//            val fo = FileOutputStream(f)
+//            fo.write(bytes.toByteArray())
+//
+//            MediaScannerConnection.scanFile(this.contexto,
+//                arrayOf(f.path),
+//                arrayOf("image/jpeg"), null)
+//            fo.close()
+//
+            val fileName = Calendar.getInstance()
+                .timeInMillis.toString() + ".jpg"
 
-            MediaScannerConnection.scanFile(this.contexto,
-                arrayOf(f.path),
-                arrayOf("image/jpeg"), null)
-            fo.close()
-            Log.d("TAG", "File Saved::--->" + f.absolutePath)
+            val f: File = File(wallpaperDirectory, fileName)
+
+            if (f.exists() && !f.canWrite())
+                throw IOException("Kan ikke skrive til filsystemet " + f.absolutePath)
+
+            if (!f.parentFile.exists())
+            {
+                f.parentFile.mkdirs();
+            }
+            if (!f.exists())
+            {
+                f.createNewFile();
+                Log.d("TAG", "File Saved::--->" + f.absolutePath)
+            }
 
             return f.absolutePath
         } catch (e1: IOException) {
@@ -96,6 +113,6 @@ class HelperQrCode(
 
     companion object {
         val QRcodeWidth = 500
-        private val IMAGE_DIRECTORY = "/QRcodePromobusque"
+        private val IMAGE_DIRECTORY = "/promobusque/"
     }
 }

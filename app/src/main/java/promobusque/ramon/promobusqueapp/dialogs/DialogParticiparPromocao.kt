@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.google.zxing.WriterException
+import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.dialog_participacao_promocao.view.*
 import promobusque.ramon.promobusqueapp.R
 import promobusque.ramon.promobusqueapp.modelos.Participacao
@@ -32,6 +33,7 @@ class DialogParticiparPromocao(val contexto: Context,
 
     private val viewCriada = criaLayout()
     private var codigoParticipacao = ""
+    private lateinit var participacao: Participacao
 
     fun CriaDialogo() {
         AlertDialog.Builder(contexto)
@@ -57,12 +59,20 @@ class DialogParticiparPromocao(val contexto: Context,
         codigoParticipacao = GeradorCodigoParticipacao().novoCodigoString
 
         try{
-            val texto = codigoParticipacao!!.toString()
+
+            //Prepara objeto de participação para gerar o Json
+            val participacao = Participacao(
+                CodigoGerado = codigoParticipacao,
+                IdUsuarioFirebase = idUsuarioFirebase,
+                IdEmpresa = promocao?.IdEmpresa ?: 0,
+                IdPromocao = promocao.Id)
+
+            val json = geraJsonParticipacao(participacao)
 
             try {
                 var helperQrCode = HelperQrCode(this.contexto, this.resources)
 
-                val bitmap = helperQrCode.TextToImageEncode(texto)
+                val bitmap = helperQrCode.TextToImageEncode(json)
 
                 //Seta a imagem
                 view.iv_cqrcode!!.setImageBitmap(bitmap)
@@ -88,17 +98,11 @@ class DialogParticiparPromocao(val contexto: Context,
                 R.layout.titulo_participacao_promocao,
                 viewGroup,
                 false)
-
         return view
     }
 
+    //Envia participação para api
     private fun enviarParticipacaoParaApi() {
-
-        val participacao = Participacao(
-            CodigoGerado = codigoParticipacao,
-            IdUsuarioFirebase = idUsuarioFirebase,
-            IdEmpresa = promocao?.IdEmpresa ?: 0,
-            IdPromocao = promocao.Id)
 
         val call = RetrofitInitializer().participacaoService()
             .Gravar(participacao)
@@ -114,6 +118,16 @@ class DialogParticiparPromocao(val contexto: Context,
                 Log.e(promobusque.ramon.promobusqueapp.modelos.TAG, "ocorreu um erro ao incluir participação de promoção: ${t.message}")
             }
         })
-
     }
+
+    //Gera json participacação com Moshi
+    private fun geraJsonParticipacao(participacao: Participacao) : String {
+
+        val moshi = Moshi.Builder().build()
+        val adapter = moshi.adapter<Participacao>(Participacao::class.java)
+        val json = adapter.toJson(participacao)
+
+        return json
+    }
+
 }
